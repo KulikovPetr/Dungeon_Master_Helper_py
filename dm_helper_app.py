@@ -25,6 +25,7 @@ class Window(Tk):  # описание окна карточки моба
         self.add_comments_row(2)  # комментарии для таблицы атак
 
         self.add_attack_1_row(3)  # строка атак 1
+        #attack_row_2 =  self.add_attack_1_row(4)
         self.add_attack_2_row(4)  # строка атак 2
         self.add_attack_3_row(5)  # строка атак 3
         self.add_dice_bucket_row(6)  # строка броска ведра кубов
@@ -72,6 +73,7 @@ class Window(Tk):  # описание окна карточки моба
         self.add_damage_button.grid(column=3, row=pos)
 
     def add_damage_clicked(self): # наносит урон по хп из окна урона
+
         if self.HP_current_txt.get() != '' and self.dmg_txt.get() != '':  # проверка на не пустые окна хп и урона
             hp_current = int(self.HP_current_txt.get())  # сохранение текущего хп
             self.HP_current_txt.delete(0,END)  # удаление текущего хп из текстбокса
@@ -190,9 +192,11 @@ class Window(Tk):  # описание окна карточки моба
         if self.atk_counter_1.get() != '' and self.atk_counter_1.get() != '\n':  # проверка, не пустой ли текстбокс количества атак
             for i in range(0,int(self.atk_counter_1.get())):  # срабатывает на указанное количество атак
                 self.roll_the_attack_1()  # совершение атаки 1
+
         if self.atk_counter_2.get() != '' and self.atk_counter_2.get() != '\n':  # проверка, не пустой ли текстбокс количества атак
             for i in range(0,int(self.atk_counter_2.get())):  # срабатывает на указанное количество атак
                 self.roll_the_attack_2()  # совершение атаки 2
+
         if self.atk_counter_3.get() != '' and self.atk_counter_3.get() != '\n':  # проверка, не пустой ли текстбокс количества атак
             for i in range(0,int(self.atk_counter_3.get())):  # срабатывает на указанное количество атак
                 self.roll_the_attack_3()  # совершение атаки 3
@@ -203,23 +207,35 @@ class Window(Tk):  # описание окна карточки моба
     """
     # метод для атаки 1
     def roll_the_attack_1(self):
+
         if self.atk_counter_1.get() != '' and self.damage_1.get() != '' and self.atk_bonus_1.get() != '':  # проверка, что строка не пустая
             self.battlelog.insert(INSERT,self.roll_the_dices(self.damage_1,self.atk_bonus_1)+"\n")  # запись в лог результатов бросков
 
+        self.battlelog.see("end") # автопрокрутка лога вниз
+
     # метод для атаки 2
     def roll_the_attack_2(self):
+
         if self.atk_counter_2.get() != '' and self.damage_2.get() != '' and self.atk_bonus_2.get() != '':  # проверка, что строка не пустая
             self.battlelog.insert(INSERT,self.roll_the_dices(self.damage_2,self.atk_bonus_2)+"\n")  # запись в лог результатов бросков
 
+        self.battlelog.see("end") # автопрокрутка лога вниз
+
     # метод для атаки 3
     def roll_the_attack_3(self):
+
         if self.atk_counter_3.get() != '' and self.damage_3.get() != '' and self.atk_bonus_3.get() != '':  # проверка, что строка не пустая
             self.battlelog.insert(INSERT,self.roll_the_dices(self.damage_3,self.atk_bonus_3)+"\n")  # запись в лог результатов бросков
 
+        self.battlelog.see("end") # автопрокрутка лога вниз
+
     # совершение броска нескольких дайсов
     def roll_the_dice_bucket(self):
+
         if self.txt_dice_bucket.get() != '':  # проверка, что строка не пустая
             self.battlelog.insert(INSERT,self.roll_the_dices(self.txt_dice_bucket, None)+"\n") # запись в лог результатов бросков
+
+        self.battlelog.see("end") # автопрокрутка лога вниз
 
 
 
@@ -233,8 +249,10 @@ class Window(Tk):  # описание окна карточки моба
         #damage_rolls = []
         damage_rolls = re.findall("\d+[d]\d+",string)  # поиск всех значений формата "число-d-число" в строке
         total_damage_of_dices = 0  # переменная для подсчёта всего урона
+
         if atk_bonus_area != None:  # костыльная проверка на то, урон это от атаки или от ведра кубов
             atk_dice = randint(1,20)  # генерируется значение от 1 до 20
+
             if atk_dice == 20:  # можно не добавлять модификатор атаки, и так проще выделить крит.
                 atk_value_string = "Nat 20! :"  # формируем строку для вывода в лог
             elif atk_dice == 1:  # можно не добавлять модификатор атаки, и так проще выделить крит.
@@ -245,11 +263,14 @@ class Window(Tk):  # описание окна карточки моба
 
         for item in damage_rolls:  #  Если прописано несколько разных типов дайсов для разных типов урона
             dice_to_roll = item.split('d')  # разделение на сколько и каких дайсов
+
             if atk_bonus_area != None:  # опять же, костыль на "заклинание ли это?". если не спелл, то:
+
                 if atk_dice == 20:  # если попадание критическое,
                     dice_to_roll_total = int(dice_to_roll[0])*2  # то количество костей урона удваиваются
                 else:
                     dice_to_roll_total = int(dice_to_roll[0])  # если не крит, то не удиваиваются
+
             else:
                 dice_to_roll_total = int(dice_to_roll[0])  # если спелл то считаем количество костей урона
 
@@ -257,7 +278,9 @@ class Window(Tk):  # описание окна карточки моба
                 total_damage_of_dices += randint(1, int(dice_to_roll[1]))  # считаем сколько выпало с каждой кости
 
         if atk_bonus_area != None:  # очередная костыльная проверка на то, не спелл ли это
-            if re.match("[+-]\d+",string) != None:  # проверка, есть ли в строке модификатор характеристики для урона
+
+            if re.findall("[+-]\d+",string)[0] != '':  # проверка, есть ли в строке модификатор характеристики для урона
+                print("есть урон")
                 return atk_value_string + str(total_damage_of_dices + int(re.findall("[+-]\d+",string)[0]))  # если модификатор есть, то добавляем его к урону и
                                                                                                              # и возвращаем значение урона
             else:
@@ -295,6 +318,7 @@ class Window(Tk):  # описание окна карточки моба
     def load_button_click(self):
         # вызов диалогового окна для выбора .txt файла для чтения
         file = fd.askopenfilename(parent=root, title='Выберите', filetypes = (("Текстовые файлы", "*.txt"),))
+
         if file != "":  # если файл выбран
             with open(file, 'r') as fp:  # открывается файл и построчно читается
 
@@ -353,6 +377,7 @@ class Window(Tk):  # описание окна карточки моба
     # описание кнопки сохранения карточки моба
     def save_button_click(self):
         file = open(self.txt.get()+'.txt', "w")  # создается и открывается для записи .txt файл с именем моба
+
         if file != "":  # проверка, что у моба есть имя
                 # построчно записываются его имя, кд, хп, атаки и урон аое-спелла
                 file.write(
@@ -360,7 +385,7 @@ class Window(Tk):  # описание окна карточки моба
                         self.atk_counter_1.get() + '\n' + self.damage_1.get() + '\n' + self.atk_bonus_1.get() + '\n' +
                         self.atk_counter_2.get() + '\n' + self.damage_2.get() + '\n' + self.atk_bonus_2.get() + '\n' +
                         self.atk_counter_3.get() + '\n' + self.damage_3.get() + '\n' + self.atk_bonus_3.get() + '\n' +
-                        self.txt_dice_bucket.get()
+                        self.txt_dice_bucket.get() + '\n'
                            )
         file.close()  # закрытие файла
 
